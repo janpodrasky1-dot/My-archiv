@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Archiv</title>
+
+<style>
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+background: #100e14;
+color: #eeeaf5;
+font-family: Arial, sans-serif;
+}
+
+header {
+padding: 35px 20px;
+text-align: center;
+background: #18141f;
+border-bottom: 1px solid #30283b;
+}
+
+h1 {
+font-size: 38px;
+margin: 0 0 10px;
+letter-spacing: 3px;
+}
+
+header p {
+color: #aaa1b7;
+}
+
+.container {
+max-width: 1150px;
+margin: auto;
+padding: 25px 18px;
+}
+
+.search {
+width: 100%;
+padding: 15px;
+background: #1d1925;
+color: white;
+border: 1px solid #41364e;
+border-radius: 9px;
+font-size: 16px;
+margin-bottom: 20px;
+}
+
+.filters {
+display: flex;
+flex-wrap: wrap;
+gap: 9px;
+margin-bottom: 25px;
+}
+
+.filters button {
+padding: 10px 17px;
+background: #211b2b;
+color: #c9bfd5;
+border: 1px solid #40344d;
+border-radius: 7px;
+cursor: pointer;
+}
+
+.filters button.active,
+.filters button:hover {
+background: #8050bd;
+color: white;
+}
+
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+gap: 20px;
+}
+
+.item {
+background: #1b1722;
+border: 1px solid #342a40;
+border-radius: 11px;
+overflow: hidden;
+}
+
+.item img {
+width: 100%;
+height: 175px;
+object-fit: cover;
+display: block;
+}
+
+.item-content {
+padding: 15px;
+}
+
+.item h3 {
+margin: 0 0 10px;
+}
+
+.item p {
+color: #aaa1b7;
+font-size: 14px;
+line-height: 1.5;
+}
+
+.rarity {
+color: #c49aff;
+font-size: 12px;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.empty {
+color: #aaa1b7;
+text-align: center;
+padding: 35px;
+}
+
+footer {
+text-align: center;
+color: #746b80;
+padding: 35px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>MY ARCHIV</h1>
+<p>Welcome to My Archive</p>
+</header>
+
+<main class="container">
+
+<input
+class="search"
+id="search"
+type="search"
+placeholder="Search items..."
+>
+
+<div class="filters" id="filters"></div>
+
+<div class="grid" id="items"></div>
+
+</main>
+
+<footer>
+My Archiv © 2026
+</footer>
+
+<script>
+const items = [
+{
+name: "Example 1",
+rarity: "Uncommon",
+image: "https://placehold.co/600x400/30243e/ffffff?text=Uncommon",
+description: "Uncommon item"
+},
+{
+name: "Example 2",
+rarity: "Common",
+image: "https://placehold.co/600x400/30243e/ffffff?text=Common",
+description: "Common item"
+},
+{
+name: "Example 3",
+rarity: "Rare",
+image: "https://placehold.co/600x400/30243e/ffffff?text=Rare",
+description: "Rare item"
+},
+{
+name: "Example 4",
+rarity: "Epic",
+image: "https://placehold.co/600x400/30243e/ffffff?text=Epic",
+description: "Epic item"
+},
+{
+name: "Example 5",
+rarity: "Mythic",
+image: "https://placehold.co/600x400/30243e/ffffff?text=Mythic",
+description: "Mythic item"
+},
+{
+name: "Example 6",
+rarity: "Legendary",
+image: "https://placehold.co/600x400/30243e/ffffff?text=Legendary",
+description: "Legendary item"
+}
+];
+
+const rarityOrder = [
+"All",
+"Uncommon",
+"Common",
+"Rare",
+"Epic",
+"Mythic",
+"Legendary"
+];
+
+let activeCategory = "All";
+
+function render() {
+const filters = document.getElementById("filters");
+const grid = document.getElementById("items");
+const search = document.getElementById("search").value.toLowerCase();
+
+filters.innerHTML = rarityOrder.map(rarity => `
+<button
+class="${activeCategory === rarity ? "active" : ""}"
+onclick="setCategory('${rarity}')">
+${rarity}
+</button>
+`).join("");
+
+const filtered = items.filter(item => {
+const categoryMatch =
+activeCategory === "All" || item.rarity === activeCategory;
+
+const searchMatch =
+item.name.toLowerCase().includes(search) ||
+item.description.toLowerCase().includes(search);
+
+return categoryMatch && searchMatch;
+});
+
+grid.innerHTML = filtered.length
+? filtered.map(item => `
+<article class="item">
+<img src="${item.image}" alt="${item.name}">
+<div class="item-content">
+<div class="rarity">${item.rarity}</div>
+<h3>${item.name}</h3>
+<p>${item.description}</p>
+</div>
+</article>
+`).join("")
+: '<div class="empty">No items found.</div>';
+}
+
+function setCategory(rarity) {
+activeCategory = rarity;
+render();
+}
+
+document.getElementById("search").addEventListener("input", render);
+
+render();
+</script>
+
+</body>
+</html>
